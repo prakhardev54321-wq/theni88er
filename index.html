@@ -138,7 +138,7 @@ const timeLabel = d => new Date(d || Date.now()).toLocaleTimeString([], { hour: 
 function addMessage(m, own = false) {
   const el = document.createElement('article');
   el.className = 'msg' + (own ? ' me' : '');
-  el.innerHTML = `<div class="meta"><strong>${esc(m.user)}</strong><span>${esc(timeLabel(m.created_at))}</span><span>#${esc(m.room)}</span></div><div>${esc(m.content)}</div>`;
+  el.innerHTML = `<div class="meta"><strong>${esc(m.username)}</strong><span>${esc(timeLabel(m.created_at))}</span><span>#${esc(m.room)}</span></div><div>${esc(m.content)}</div>`;
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -174,7 +174,7 @@ async function loadAndSubscribe() {
     .order('created_at', { ascending: true })
     .limit(50);
   if (error) { status.textContent = 'Error: ' + error.message; return; }
-  data.forEach(row => addMessage(row, row.user === (nameInput.value.trim() || 'Guest')));
+  data.forEach(row => addMessage(row, row.username === (nameInput.value.trim() || 'Guest')));
   status.textContent = 'Live in #' + currentRoom;
 
   channel = client.channel('chat:' + currentRoom)
@@ -182,17 +182,17 @@ async function loadAndSubscribe() {
       event: 'INSERT', schema: 'public', table: TABLE,
       filter: `room=eq.${currentRoom}`
     }, payload => {
-      addMessage(payload.new, payload.new.user === (nameInput.value.trim() || 'Guest'));
+      addMessage(payload.new, payload.new.username === (nameInput.value.trim() || 'Guest'));
     })
     .subscribe();
 }
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  const user = nameInput.value.trim() || 'Guest';
+  const username = nameInput.value.trim() || 'Guest';
   const content = messageInput.value.trim();
   if (!content) return;
-  const { error } = await client.from(TABLE).insert({ room: currentRoom, user, content });
+  const { error } = await client.from(TABLE).insert({ room: currentRoom, username, content });
   if (error) { status.textContent = 'Send failed: ' + error.message; return; }
   messageInput.value = '';
   messageInput.focus();
