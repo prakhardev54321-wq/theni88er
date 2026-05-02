@@ -8,14 +8,12 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f0;display:flex;height:100vh;overflow:hidden}
-/* PASSWORD SCREEN */
 #lock-screen{position:fixed;inset:0;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px}
 #lock-screen h2{font-size:1.4rem;font-weight:700;color:#e2e8f0}
 #lock-screen p{font-size:.9rem;color:#64748b;text-align:center;max-width:260px}
 #lock-input{padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#16213e;color:#e2e8f0;font-size:1rem;width:260px;outline:none;text-align:center}
 #lock-btn{padding:12px 40px;background:#5865f2;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}
 #lock-err{color:#f87171;font-size:.85rem;display:none}
-/* SIDEBAR */
 .sidebar{width:240px;min-width:240px;background:#16213e;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.08)}
 .sidebar-header{padding:1rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.6rem}
 .sidebar-header h1{font-size:1rem;font-weight:700;color:#e2e8f0}
@@ -28,7 +26,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 .sidebar-footer{margin-top:auto;padding:0.8rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.8rem}
 .avatar{width:32px;height:32px;border-radius:50%;background:#5865f2;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700}
 .uname-input{flex:1;background:transparent;border:none;color:#e2e8f0;font-size:0.85rem;outline:none}
-/* MAIN */
 .main{flex:1;display:flex;flex-direction:column;background:#1e1e2e;overflow:hidden}
 .main-header{padding:0.8rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.5rem}
 .main-header span:first-child{font-size:1.2rem;opacity:0.6}
@@ -43,16 +40,24 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 .msg-author{font-weight:700;font-size:0.9rem;color:#c9d1d9}
 .msg-time{font-size:0.7rem;color:#64748b}
 .msg-text{font-size:0.9rem;color:#d1d5db;line-height:1.5;word-break:break-word}
-.msg-text img{max-width:300px;max-height:300px;border-radius:8px;display:block;margin-top:4px}
+.msg-text img{max-width:300px;max-height:300px;border-radius:8px;display:block;margin-top:4px;cursor:pointer}
 .msg-text a{color:#7eb3f7;text-decoration:none}
-/* INPUT */
-.input-area{padding:0.8rem 1rem;border-top:1px solid rgba(255,255,255,0.08)}
+.input-area{padding:0.8rem 1rem;border-top:1px solid rgba(255,255,255,0.08);position:relative}
 .input-row{display:flex;gap:0.5rem;align-items:center;background:#2d2d3e;border-radius:8px;padding:0.5rem 0.75rem}
-#attach-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;color:#94a3b8;flex-shrink:0}
+#attach-btn,#gif-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;color:#94a3b8;flex-shrink:0;padding:2px 4px;border-radius:4px}
+#attach-btn:hover,#gif-btn:hover{color:#e2e8f0;background:rgba(255,255,255,0.08)}
+#gif-btn{font-size:.75rem;font-weight:700;letter-spacing:.05em;padding:3px 6px;border:1px solid #64748b;border-radius:4px}
 #file-input{display:none}
 #chat-input{flex:1;background:transparent;border:none;color:#e2e8f0;font-size:0.9rem;outline:none;resize:none;max-height:120px;font-family:inherit}
 #send-btn{background:#5865f2;color:#fff;border:none;border-radius:6px;padding:0.4rem 1rem;font-size:0.85rem;font-weight:600;cursor:pointer;flex-shrink:0}
 #send-btn:hover{background:#4752c4}
+/* GIF PICKER */
+#gif-picker{display:none;position:absolute;bottom:75px;left:12px;width:340px;max-width:calc(100vw - 260px - 24px);background:#16213e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:100}
+#gif-search{width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#1a1a2e;color:#e2e8f0;font-size:.9rem;outline:none;margin-bottom:8px}
+#gif-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:220px;overflow-y:auto}
+#gif-grid img{width:100%;height:80px;object-fit:cover;border-radius:6px;cursor:pointer;transition:opacity .15s}
+#gif-grid img:hover{opacity:.8}
+#gif-powered{font-size:.65rem;color:#64748b;text-align:right;margin-top:6px}
 /* NAME MODAL */
 #name-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:200}
 #name-box{background:#16213e;border-radius:12px;padding:2rem;width:300px;text-align:center;display:flex;flex-direction:column;gap:1rem}
@@ -63,7 +68,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 </style>
 </head>
 <body>
-<!-- LOCK SCREEN -->
 <div id="lock-screen">
 <div style="font-size:3rem">&#128274;</div>
 <h2>Open Chat</h2>
@@ -72,9 +76,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 <button id="lock-btn">Enter</button>
 <span id="lock-err">Wrong password, try again</span>
 </div>
-<!-- MAIN APP -->
 <div id="app" style="display:none;width:100%;height:100vh;overflow:hidden">
-<!-- NAME MODAL -->
 <div id="name-modal">
 <div id="name-box">
 <h2>Welcome to Open Chat!</h2>
@@ -87,25 +89,26 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 <div class="sidebar-header"><span>&#128172;</span><h1>Open Chat</h1></div>
 <div class="rooms-label">Rooms</div>
 <div class="room-item active" data-room="general">general</div>
-<div class="room-item" data-room="study-hall">study-hall</div>
 <div class="room-item" data-room="gaming">gaming</div>
-<div class="room-item" data-room="random">random</div>
 <div class="sidebar-footer">
 <div class="avatar" id="user-avatar">?</div>
 <input class="uname-input" id="display-name" readonly placeholder="username" />
 </div>
 </div>
 <div class="main">
-<div class="main-header">
-<span>#</span>
-<h2 id="room-title">general</h2>
-</div>
+<div class="main-header"><span>#</span><h2 id="room-title">general</h2></div>
 <div id="status">Connecting...</div>
 <div id="messages"></div>
 <div class="input-area">
+<div id="gif-picker">
+<input id="gif-search" placeholder="Search Giphy..." />
+<div id="gif-grid"></div>
+<div id="gif-powered">Powered by GIPHY</div>
+</div>
 <div class="input-row">
 <button id="attach-btn" title="Attach file">&#128206;</button>
 <input type="file" id="file-input" accept="image/*,video/*,.pdf,.doc,.docx,.txt" />
+<button id="gif-btn" title="Send a GIF">GIF</button>
 <textarea id="chat-input" placeholder="Message #general" rows="1"></textarea>
 <button id="send-btn">Send</button>
 </div>
@@ -115,22 +118,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 <script>
 const SUPABASE_URL='https://ibvmnwntciifgfjuchcw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlidm1ud250Y2lpZmdmanVjaGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODYyMDksImV4cCI6MjA5MzI2MjIwOX0.c9ZMfTKyggPEDgfgBJ6s0-tBKwnHbOlXL5LcbB3aJrM';
+const GIPHY_KEY='GlVGYHkr3WSBnllca54iNt0yFbjz7L65';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const PASSWORD='fuckeshwar';
-let username='Anonymous';
-let currentRoom='general';
-let channel=null;
-// LOCK
+let username='Anonymous',currentRoom='general',channel=null,gifOpen=false;
 document.getElementById('lock-btn').onclick=function(){
   if(document.getElementById('lock-input').value.trim()===PASSWORD){
     document.getElementById('lock-screen').style.display='none';
     document.getElementById('app').style.display='flex';
-  } else {
-    document.getElementById('lock-err').style.display='block';
-  }
+  } else {document.getElementById('lock-err').style.display='block';}
 };
 document.getElementById('lock-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lock-btn').click();});
-// NAME
 document.getElementById('name-join-btn').onclick=function(){
   const n=document.getElementById('name-input').value.trim();
   if(!n)return;
@@ -141,12 +139,7 @@ document.getElementById('name-join-btn').onclick=function(){
   initChat();
 };
 document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('name-join-btn').click();});
-function initChat(){
-  loadMessages();
-  subscribeRoom();
-  document.getElementById('status').textContent='Connected · #'+currentRoom;
-}
-// ROOMS
+function initChat(){loadMessages();subscribeRoom();document.getElementById('status').textContent='Connected · #'+currentRoom;}
 document.querySelectorAll('.room-item').forEach(el=>{
   el.onclick=function(){
     document.querySelectorAll('.room-item').forEach(r=>r.classList.remove('active'));
@@ -156,9 +149,8 @@ document.querySelectorAll('.room-item').forEach(el=>{
     document.getElementById('chat-input').placeholder='Message #'+currentRoom;
     document.getElementById('status').textContent='Connected · #'+currentRoom;
     document.getElementById('messages').innerHTML='';
-    if(channel){sb.removeChannel(channel);}
-    loadMessages();
-    subscribeRoom();
+    if(channel)sb.removeChannel(channel);
+    loadMessages();subscribeRoom();
   };
 });
 async function loadMessages(){
@@ -172,8 +164,7 @@ function subscribeRoom(){
     .subscribe();
 }
 function renderMsg(m){
-  const div=document.createElement('div');
-  div.className='msg';
+  const div=document.createElement('div');div.className='msg';
   const av=document.createElement('div');av.className='msg-avatar';
   av.textContent=(m.username||'?')[0].toUpperCase();
   const body=document.createElement('div');body.className='msg-content';
@@ -184,16 +175,14 @@ function renderMsg(m){
   hdr.appendChild(auth);hdr.appendChild(t);
   const txt=document.createElement('div');txt.className='msg-text';
   if(m.file_url){
-    if(/\.(jpe?g|png|gif|webp)$/i.test(m.file_url)){
+    if(/\.(jpe?g|png|gif|webp)$/i.test(m.file_url)||m.file_url.includes('giphy.com')||m.file_url.includes('media.giphy')){
       const img=document.createElement('img');img.src=m.file_url;txt.appendChild(img);
     } else {
       const a=document.createElement('a');a.href=m.file_url;a.target='_blank';
       a.textContent=m.file_name||'Download file';txt.appendChild(a);
     }
     if(m.content)txt.appendChild(document.createTextNode(m.content));
-  } else {
-    txt.textContent=m.content;
-  }
+  } else {txt.textContent=m.content;}
   body.appendChild(hdr);body.appendChild(txt);
   div.appendChild(av);div.appendChild(body);
   const msgs=document.getElementById('messages');
@@ -223,6 +212,48 @@ document.getElementById('file-input').onchange=async function(){
   await sendMsg('',data.publicUrl,f.name);
   this.value='';
 };
+// GIF PICKER
+document.getElementById('gif-btn').onclick=function(e){
+  e.stopPropagation();
+  gifOpen=!gifOpen;
+  const picker=document.getElementById('gif-picker');
+  picker.style.display=gifOpen?'block':'none';
+  if(gifOpen){searchGiphy('trending');}
+};
+document.addEventListener('click',function(e){
+  if(gifOpen&&!document.getElementById('gif-picker').contains(e.target)&&e.target.id!=='gif-btn'){
+    gifOpen=false;document.getElementById('gif-picker').style.display='none';
+  }
+});
+async function searchGiphy(q){
+  const trending=q==='trending';
+  const url=trending
+    ?`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=15&rating=pg`
+    :`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(q)}&limit=15&rating=pg`;
+  const r=await fetch(url);
+  const d=await r.json();
+  const grid=document.getElementById('gif-grid');
+  grid.innerHTML='';
+  if(d.data){
+    d.data.forEach(g=>{
+      const img=document.createElement('img');
+      img.src=g.images.fixed_height_small.url;
+      img.title=g.title;
+      img.onclick=async()=>{
+        gifOpen=false;
+        document.getElementById('gif-picker').style.display='none';
+        await sendMsg('',g.images.original.url,g.title||'gif');
+      };
+      grid.appendChild(img);
+    });
+  }
+}
+let gifSearchTimer;
+document.getElementById('gif-search').addEventListener('input',function(){
+  clearTimeout(gifSearchTimer);
+  const v=this.value.trim();
+  gifSearchTimer=setTimeout(()=>searchGiphy(v||'trending'),400);
+});
 </script>
 </body>
 </html>
