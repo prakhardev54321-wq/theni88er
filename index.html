@@ -3,292 +3,145 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>ni88erroom</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+<title>Live Chat Room</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#1c1c1c;color:#e0e0e0;display:flex;height:100vh;overflow:hidden}
-/* LOCK */
-#lock-screen{position:fixed;inset:0;background:#1c1c1c;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px}
-#lock-screen h2{font-size:1.4rem;font-weight:700}
-#lock-screen p{font-size:.9rem;color:#888;text-align:center;max-width:260px}
-#lock-input{padding:11px 16px;border-radius:8px;border:1px solid #333;background:#2a2a2a;color:#e0e0e0;font-size:1rem;width:260px;outline:none;text-align:center}
-#lock-btn{padding:11px 40px;background:#00b4d8;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}
-#lock-err{color:#f87171;font-size:.85rem;display:none}
-/* LAYOUT */
-#app{display:none;width:100%;height:100vh}
-.layout{display:flex;height:100vh;overflow:hidden}
-/* SIDEBAR */
-.sidebar{width:280px;min-width:280px;background:#252525;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid #333}
-.sidebar-top{padding:1.2rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #333}
-.sidebar-brand{display:flex;align-items:center;gap:0.6rem}
-.sidebar-icon{font-size:1.4rem}
-.sidebar-title{font-size:1.05rem;font-weight:700;color:#e0e0e0}
-.sidebar-settings{background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:4px;border-radius:50%}
-.sidebar-settings:hover{background:#333;color:#e0e0e0}
-.about-box{margin:1rem;background:#2e2e2e;border-radius:10px;padding:1rem}
-.about-box h3{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#aaa;margin-bottom:.6rem}
-.about-box p{font-size:.82rem;color:#999;line-height:1.5}
-.rooms-section{padding:0 1rem 1rem}
-.rooms-label{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#aaa;margin-bottom:.6rem;padding:.8rem 0 .3rem}
-.room-card{background:#2e2e2e;border-radius:10px;padding:.85rem 1rem;margin-bottom:.5rem;cursor:pointer;border:2px solid transparent;transition:border-color .15s}
-.room-card:hover{border-color:#444}
-.room-card.active{border-color:#00b4d8}
-.room-card-name{font-weight:700;font-size:.95rem;color:#e0e0e0}
-.room-card-count{font-size:.78rem;color:#888;margin-top:.2rem}
-/* MAIN */
-.main{flex:1;display:flex;flex-direction:column;background:#1c1c1c;overflow:hidden}
-.main-header{padding:1rem 1.4rem;border-bottom:1px solid #333;display:flex;align-items:baseline;gap:.6rem}
-.main-header h2{font-size:1.3rem;font-weight:700;color:#e0e0e0}
-.main-header p{font-size:.82rem;color:#888}
-#messages{flex:1;overflow-y:auto;padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:.7rem}
-/* MESSAGE BUBBLES - card style */
-.msg-card{background:#2a2a2a;border-radius:10px;padding:.75rem 1rem}
-.msg-card-header{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.35rem}
-.msg-author{font-weight:700;font-size:.88rem;color:#e0e0e0}
-.msg-time{font-size:.72rem;color:#666}
-.msg-text{font-size:.9rem;color:#ccc;line-height:1.5;word-break:break-word}
-.msg-text img{max-width:280px;max-height:280px;border-radius:8px;display:block;margin-top:6px}
-.msg-text a{color:#00b4d8;text-decoration:none}
-/* INPUT */
-.input-area{padding:.9rem 1.4rem;border-top:1px solid #333;position:relative}
-.input-row{display:flex;gap:.6rem;align-items:center}
-#username-input{width:120px;padding:.6rem .8rem;border-radius:8px;border:1px solid #333;background:#2a2a2a;color:#e0e0e0;font-size:.88rem;outline:none;font-family:inherit}
-#msg-input{flex:1;padding:.6rem .9rem;border-radius:8px;border:1px solid #333;background:#2a2a2a;color:#e0e0e0;font-size:.9rem;outline:none;resize:none;max-height:100px;font-family:inherit}
-#send-btn{padding:.6rem 1.4rem;background:#00b4d8;color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;flex-shrink:0}
-#send-btn:hover{background:#0096b4}
-.input-extras{display:flex;gap:.5rem;margin-bottom:.5rem;align-items:center}
-#attach-btn,#gif-btn{background:none;border:none;cursor:pointer;font-size:1rem;color:#888;padding:3px 6px;border-radius:5px}
-#attach-btn:hover,#gif-btn:hover{background:#2e2e2e;color:#e0e0e0}
-#gif-btn{font-size:.72rem;font-weight:700;letter-spacing:.05em;border:1px solid #555;border-radius:4px;padding:2px 6px}
-#file-input{display:none}
-.input-hint{font-size:.72rem;color:#555;margin-top:.45rem}
-/* GIF PICKER */
-#gif-picker{display:none;position:absolute;bottom:110px;left:1.4rem;width:340px;background:#252525;border:1px solid #333;border-radius:12px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:100}
-#gif-search{width:100%;padding:7px 10px;border-radius:7px;border:1px solid #333;background:#1c1c1c;color:#e0e0e0;font-size:.88rem;outline:none;margin-bottom:8px}
-#gif-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:210px;overflow-y:auto}
-#gif-grid img{width:100%;height:78px;object-fit:cover;border-radius:6px;cursor:pointer;transition:opacity .15s}
-#gif-grid img:hover{opacity:.75}
-#gif-powered{font-size:.62rem;color:#555;text-align:right;margin-top:5px}
-/* NAME MODAL */
-#name-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
-#name-box{background:#252525;border-radius:14px;padding:2rem;width:300px;text-align:center;display:flex;flex-direction:column;gap:1rem}
-#name-box h2{font-size:1.1rem;font-weight:700}
-#name-box p{font-size:.85rem;color:#888}
-#name-input{padding:.7rem 1rem;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#e0e0e0;font-size:.95rem;outline:none;text-align:center}
-#name-join-btn{padding:.7rem;background:#00b4d8;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}
+body{font-family:system-ui,sans-serif;min-height:100dvh;display:flex;flex-direction:column;
+  background:radial-gradient(circle at top left,rgba(1,105,111,0.28),transparent 40%),
+  linear-gradient(135deg,#020617 0%,#111827 45%,#020617 100%);color:#f1f5f9}
+header{padding:1rem 1.5rem;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+header h1{font-size:1.2rem;font-weight:700;color:#34d399}
+.rooms{display:flex;gap:0.5rem;flex-wrap:wrap}
+.room-btn{padding:0.3rem 0.9rem;border-radius:999px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.05);
+  color:#94a3b8;cursor:pointer;font-size:0.85rem;transition:all .2s}
+.room-btn.active{background:#34d399;color:#0f172a;border-color:#34d399;font-weight:700}
+#username-bar{padding:0.45rem 1.5rem;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#94a3b8}
+#username-bar input{width:150px;padding:0.2rem 0.6rem;border-radius:6px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.06);color:#f1f5f9;font-size:0.82rem}
+#messages{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:0.55rem}
+.msg{padding:0.6rem 1rem;border-radius:12px;
+  background:radial-gradient(circle at top left,rgba(255,255,255,0.1),rgba(15,23,42,0.55));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.msg .meta{font-size:0.72rem;color:#64748b;margin-bottom:0.18rem}
+.msg .meta span{color:#34d399;font-weight:600}
+.msg .text{font-size:0.93rem;color:#e2e8f0;word-break:break-word}
+form{display:flex;gap:0.5rem;padding:1rem 1.5rem;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(255,255,255,0.1)}
+#msg{flex:1;padding:0.65rem 1rem;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.07);color:#f1f5f9;font-size:0.95rem}
+#msg:focus{outline:none;border-color:#34d399}
+button[type=submit]{padding:0.65rem 1.3rem;border-radius:10px;border:none;
+  background:#34d399;color:#0f172a;font-weight:700;cursor:pointer;font-size:0.95rem}
+button[type=submit]:hover{background:#6ee7b7}
+#status{font-size:0.75rem;padding:0.3rem 1.5rem;
+  background:rgba(0,0,0,0.3);color:#64748b;text-align:center}
 </style>
 </head>
 <body>
-<div id="lock-screen">
-<div style="font-size:2.5rem">&#128274;</div>
-<h2>ni88erroom</h2>
-<p>Enter the password to continue</p>
-<input id="lock-input" type="password" placeholder="Password" />
-<button id="lock-btn">Enter</button>
-<span id="lock-err">Wrong password</span>
+<header>
+  <h1>💬 Live Chat</h1>
+  <div class="rooms">
+    <button class="room-btn active" onclick="switchRoom('general',this)">General</button>
+    <button class="room-btn" onclick="switchRoom('study',this)">Study Hall</button>
+    <button class="room-btn" onclick="switchRoom('gaming',this)">Gaming</button>
+    <button class="room-btn" onclick="switchRoom('random',this)">Random</button>
+  </div>
+</header>
+<div id="username-bar">
+  Your name: <input id="uname" value="Anonymous" maxlength="20" placeholder="Enter name"/>
 </div>
-<div id="app">
-<div id="name-modal">
-<div id="name-box">
-<h2>Welcome!</h2>
-<p>Pick a username to join</p>
-<input id="name-input" placeholder="Your username" maxlength="20"/>
-<button id="name-join-btn">Join Chat</button>
-</div>
-</div>
-<div class="layout">
-<div class="sidebar">
-<div class="sidebar-top">
-<div class="sidebar-brand">
-<span class="sidebar-icon">&#128172;</span>
-<span class="sidebar-title">ni88erroom</span>
-</div>
-<button class="sidebar-settings" title="Settings">&#9881;</button>
-</div>
-<div class="about-box">
-<h3>About</h3>
-<p>A real-time browser-based chat room. Messages sync live across all users via Supabase. Send text, images, files, and GIFs.</p>
-</div>
-<div class="rooms-section">
-<div class="rooms-label">Rooms</div>
-<div class="room-card active" data-room="general">
-<div class="room-card-name">General</div>
-<div class="room-card-count" id="count-general">Open conversation for anyone</div>
-</div>
-<div class="room-card" data-room="gaming">
-<div class="room-card-name">Gaming</div>
-<div class="room-card-count" id="count-gaming">Talk about games</div>
-</div>
-</div>
-</div>
-<div class="main">
-<div class="main-header">
-<h2 id="room-title">General</h2>
-<p id="room-desc">Open conversation for anyone using the page.</p>
-</div>
+<div id="status">Connecting...</div>
 <div id="messages"></div>
-<div class="input-area">
-<div id="gif-picker">
-<input id="gif-search" placeholder="Search Giphy..."/>
-<div id="gif-grid"></div>
-<div id="gif-powered">Powered by GIPHY</div>
-</div>
-<div class="input-extras">
-<button id="attach-btn" title="Attach file">&#128206;</button>
-<input type="file" id="file-input" accept="image/*,video/*,.pdf,.doc,.docx,.txt"/>
-<button id="gif-btn" title="Send GIF">GIF</button>
-</div>
-<div class="input-row">
-<input id="username-input" placeholder="Guest" maxlength="20"/>
-<textarea id="msg-input" placeholder="Type a message..." rows="1"></textarea>
-<button id="send-btn">Send</button>
-</div>
-<div class="input-hint">Messages sync live across all users in real time.</div>
-</div>
-</div>
-</div>
-</div>
+<form onsubmit="sendMsg(event)">
+  <input id="msg" placeholder="Type a message and press Send..." autocomplete="off" required/>
+  <button type="submit">Send</button>
+</form>
 <script>
-const SUPABASE_URL='https://ibvmnwntciifgfjuchcw.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlidm1ud250Y2lpZmdmanVjaGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODYyMDksImV4cCI6MjA5MzI2MjIwOX0.c9ZMfTKyggPEDgfgBJ6s0-tBKwnHbOlXL5LcbB3aJrM';
-const GIPHY_KEY='GlVGYHkr3WSBnllca54iNt0yFbjz7L65';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const PASSWORD='fuckeshwar';
-const ROOM_DESCS={general:'Open conversation for anyone using the page.',gaming:'Talk about games and gaming news.'};
-let currentRoom='general',channel=null,gifOpen=false;
-// LOCK
-document.getElementById('lock-btn').onclick=function(){
-  if(document.getElementById('lock-input').value.trim()===PASSWORD){
-    document.getElementById('lock-screen').style.display='none';
-    document.getElementById('app').style.display='block';
-  } else {document.getElementById('lock-err').style.display='block';}
-};
-document.getElementById('lock-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lock-btn').click();});
-// NAME
-document.getElementById('name-join-btn').onclick=function(){
-  const n=document.getElementById('name-input').value.trim();
-  if(!n)return;
-  document.getElementById('username-input').value=n;
-  document.getElementById('name-modal').style.display='none';
-  initChat();
-};
-document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('name-join-btn').click();});
-function getUser(){return document.getElementById('username-input').value.trim()||'Guest';}
-function initChat(){loadMessages();subscribeRoom();loadCounts();}
-// ROOMS
-document.querySelectorAll('.room-card').forEach(el=>{
-  el.onclick=function(){
-    document.querySelectorAll('.room-card').forEach(r=>r.classList.remove('active'));
-    this.classList.add('active');
-    currentRoom=this.dataset.room;
-    const titles={general:'General',gaming:'Gaming'};
-    document.getElementById('room-title').textContent=titles[currentRoom]||currentRoom;
-    document.getElementById('room-desc').textContent=ROOM_DESCS[currentRoom]||'';
-    document.getElementById('messages').innerHTML='';
-    if(channel)sb.removeChannel(channel);
-    loadMessages();subscribeRoom();
-  };
-});
-async function loadCounts(){
-  for(const room of['general','gaming']){
-    const{count}=await sb.from('messages').select('*',{count:'exact',head:true}).eq('room',room);
-    const el=document.getElementById('count-'+room);
-    if(el&&count!=null)el.textContent=count+' message'+(count===1?'':'s');
-  }
-}
+const SUPABASE_URL = 'https://ibvmnwntciifgfjuchcw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_HcNk-snxnySBE9adLYTlKg_4sIOCmKI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentRoom = 'general';
+let channel;
+
+function setStatus(msg){ document.getElementById('status').textContent = msg; }
+
 async function loadMessages(){
-  const{data,error}=await sb.from('messages').select('*').eq('room',currentRoom).order('created_at',{ascending:true});
-  if(error)return;
-  if(data)data.forEach(renderMsg);
-  loadCounts();
+  const box = document.getElementById('messages');
+  box.innerHTML = '<div style="color:#64748b;text-align:center;padding:1rem">Loading messages...</div>';
+  const {data, error} = await sb.from('messages').select('*')
+    .eq('room', currentRoom).order('created_at',{ascending:true}).limit(60);
+  box.innerHTML = '';
+  if(error){ setStatus('Error loading messages: '+error.message); return; }
+  if(!data.length) box.innerHTML = '<div style="color:#64748b;text-align:center;padding:2rem">No messages yet. Say hello!</div>';
+  (data||[]).forEach(addMsgToUI);
+  box.scrollTop = box.scrollHeight;
+  setStatus('Connected · #'+currentRoom);
 }
+
+function addMsgToUI(m){
+  const box = document.getElementById('messages');
+  const empty = box.querySelector('div[style]');
+  if(empty) box.innerHTML='';
+  const div = document.createElement('div');
+  div.className = 'msg';
+  const t = new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML = `<div class="meta"><span>${escHtml(m.username)}</span> · ${t}</div>
+    <div class="text">${escHtml(m.content)}</div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function subscribeRoom(){
-  channel=sb.channel('room:'+currentRoom)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'room=eq.'+currentRoom},p=>{renderMsg(p.new);loadCounts();})
-    .subscribe();
+  if(channel) sb.removeChannel(channel);
+  channel = sb.channel('room-'+currentRoom)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',
+      filter:'room=eq.'+currentRoom}, p => addMsgToUI(p.new))
+    .subscribe(status => {
+      if(status==='SUBSCRIBED') setStatus('Connected · #'+currentRoom);
+      if(status==='CLOSED') setStatus('Disconnected — refresh to reconnect');
+    });
 }
-function renderMsg(m){
-  const card=document.createElement('div');card.className='msg-card';
-  const hdr=document.createElement('div');hdr.className='msg-card-header';
-  const auth=document.createElement('span');auth.className='msg-author';auth.textContent=m.username||'Guest';
-  const t=document.createElement('span');t.className='msg-time';
-  t.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-  hdr.appendChild(auth);hdr.appendChild(t);
-  const txt=document.createElement('div');txt.className='msg-text';
-  if(m.file_url){
-    if(/\.(jpe?g|png|gif|webp)$/i.test(m.file_url)||m.file_url.includes('giphy.com')){
-      const img=document.createElement('img');img.src=m.file_url;txt.appendChild(img);
-    } else {
-      const a=document.createElement('a');a.href=m.file_url;a.target='_blank';
-      a.textContent=m.file_name||'Download file';txt.appendChild(a);
-    }
-    if(m.content)txt.appendChild(document.createTextNode(m.content));
-  } else {txt.textContent=m.content;}
-  card.appendChild(hdr);card.appendChild(txt);
-  const msgs=document.getElementById('messages');
-  msgs.appendChild(card);
-  msgs.scrollTop=msgs.scrollHeight;
+
+function switchRoom(room, btn){
+  currentRoom = room;
+  document.querySelectorAll('.room-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  loadMessages();
+  subscribeRoom();
 }
-async function sendMsg(content,file_url,file_name){
-  if(!content&&!file_url)return;
-  const username=getUser();
-  await sb.from('messages').insert([{room:currentRoom,username,content:content||'',file_url:file_url||null,file_name:file_name||null}]);
+
+async function sendMsg(e){
+  e.preventDefault();
+  const content = document.getElementById('msg').value.trim();
+  const username = document.getElementById('uname').value.trim() || 'Anonymous';
+  if(!content) return;
+  document.getElementById('msg').value = '';
+  const {error} = await sb.from('messages').insert({room:currentRoom, username, content});
+  if(error) setStatus('Send error: '+error.message);
 }
-document.getElementById('send-btn').onclick=async function(){
-  const t=document.getElementById('msg-input').value.trim();
-  if(!t)return;
-  document.getElementById('msg-input').value='';
-  await sendMsg(t);
-};
-document.getElementById('msg-input').addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('send-btn').click();}
-});
-document.getElementById('attach-btn').onclick=()=>document.getElementById('file-input').click();
-document.getElementById('file-input').onchange=async function(){
-  const f=this.files[0];if(!f)return;
-  const path=`${Date.now()}_${f.name}`;
-  const{error}=await sb.storage.from('chat-files').upload(path,f);
-  if(error){alert('Upload failed: '+error.message);return;}
-  const{data}=sb.storage.from('chat-files').getPublicUrl(path);
-  await sendMsg('',data.publicUrl,f.name);
-  this.value='';
-};
-// GIF
-document.getElementById('gif-btn').onclick=function(e){
-  e.stopPropagation();
-  gifOpen=!gifOpen;
-  document.getElementById('gif-picker').style.display=gifOpen?'block':'none';
-  if(gifOpen)searchGiphy('trending');
-};
-document.addEventListener('click',function(e){
-  if(gifOpen&&!document.getElementById('gif-picker').contains(e.target)&&e.target.id!=='gif-btn'){
-    gifOpen=false;document.getElementById('gif-picker').style.display='none';
-  }
-});
-async function searchGiphy(q){
-  const isTrend=q==='trending';
-  const url=isTrend
-    ?`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=15&rating=pg`
-    :`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(q)}&limit=15&rating=pg`;
-  const r=await fetch(url);const d=await r.json();
-  const grid=document.getElementById('gif-grid');grid.innerHTML='';
-  if(d.data)d.data.forEach(g=>{
-    const img=document.createElement('img');
-    img.src=g.images.fixed_height_small.url;
-    img.onclick=async()=>{
-      gifOpen=false;document.getElementById('gif-picker').style.display='none';
-      await sendMsg('',g.images.original.url,g.title||'gif');
-    };
-    grid.appendChild(img);
-  });
-}
-let gifTimer;
-document.getElementById('gif-search').addEventListener('input',function(){
-  clearTimeout(gifTimer);
-  const v=this.value.trim();
-  gifTimer=setTimeout(()=>searchGiphy(v||'trending'),400);
-});
+
+loadMessages();
+subscribeRoom();
 </script>
 </body>
 </html>
