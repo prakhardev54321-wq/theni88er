@@ -73,7 +73,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 <span id="lock-err">Wrong password, try again</span>
 </div>
 <!-- MAIN APP -->
-<div id="app" style="display:none;width:100%;height:100vh;overflow:hidden;display:none">
+<div id="app" style="display:none;width:100%;height:100vh;overflow:hidden">
 <!-- NAME MODAL -->
 <div id="name-modal">
 <div id="name-box">
@@ -113,8 +113,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#e2e8f
 </div>
 </div>
 <script>
-const SUPABASE_URL='https://fhkgnkqfvmhshjxoxzry.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoa2dua3Fmdm1oc2hqeG94enJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMjk1MDcsImV4cCI6MjA2NDYwNTUwN30.ERhbEg8u5xEilGcC-IYJ6qxfmFqNlRBLH2HtWWVQpK4';
+const SUPABASE_URL='https://ibvmnwntciifgfjuchcw.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlidm1ud250Y2lpZmdmanVjaGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODYyMDksImV4cCI6MjA5MzI2MjIwOX0.c9ZMfTKyggPEDgfgBJ6s0-tBKwnHbOlXL5LcbB3aJrM';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const PASSWORD='fuckeshwar';
 let username='Anonymous';
@@ -162,7 +162,8 @@ document.querySelectorAll('.room-item').forEach(el=>{
   };
 });
 async function loadMessages(){
-  const{data}=await sb.from('messages').select('*').eq('room',currentRoom).order('created_at',{ascending:true});
+  const{data,error}=await sb.from('messages').select('*').eq('room',currentRoom).order('created_at',{ascending:true});
+  if(error){document.getElementById('status').textContent='Error: '+error.message;return;}
   if(data)data.forEach(renderMsg);
 }
 function subscribeRoom(){
