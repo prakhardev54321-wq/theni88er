@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ni88erchatRoom</title>
-//api.fontshare.com/v2/css?f=satoshi:400,500,700&display=swap" rel="stylesheet">
+<title>ni88er Chat Room</title>
+<link href="https://api.fontshare.com/v2/css?f=satoshi:400,500,700&display=swap" rel="stylesheet">
 <style>
 :root, [data-theme="light"] {
   --bg: #f7f6f2;
@@ -18,8 +18,6 @@
   --inverse: #f9f8f4;
   --shadow: 0 10px 30px rgba(0,0,0,.08);
   --radius: 1rem;
-  --radius2: .75rem;
-  --space: 1rem;
   --font: Satoshi, system-ui, sans-serif;
 }
 [data-theme="dark"] {
@@ -35,10 +33,10 @@
   --shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100dvh;font-family:var(--font);color:var(--text);background:radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 18%, transparent) 30%, var(--bg))}
+body{margin:0;min-height:100dvh;font-family:var(--font);color:var(--text);background:radial-gradient(circle at top left,color-mix(in srgb,var(--primary) 18%,transparent) 30%,var(--bg))}
 button,input{font:inherit}
 button{cursor:pointer;border:none}
-.app{display:grid;grid-template-columns:320px 1fr;min-height:100dvh}
+.app{display:grid;grid-template-columns:300px 1fr;min-height:100dvh}
 .side{padding:1.25rem;border-right:1px solid var(--border);background:var(--surface)}
 .brand{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem}
 .brand h1{font-size:1.4rem;margin:0}
@@ -47,27 +45,25 @@ button{cursor:pointer;border:none}
 .card h2{margin:.1rem 0 .7rem;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .rooms{display:grid;gap:.65rem}
 .room{padding:.85rem 1rem;text-align:left;border-radius:.85rem;background:transparent;border:1px solid var(--border);color:var(--text)}
-.room.active,.room:hover{background:color-mix(in srgb, var(--primary) 12%, var(--surface));border-color:var(--primary)}
+.room.active,.room:hover{background:color-mix(in srgb,var(--primary) 12%,var(--surface));border-color:var(--primary)}
 .main{display:grid;grid-template-rows:auto 1fr auto;min-height:100dvh}
 .top{padding:1.25rem 1.35rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .top h2{margin:0;font-size:1.65rem}
 .top p{margin:.25rem 0 0;color:var(--muted)}
-.badge{padding:.45rem .7rem;border-radius:999px;background:color-mix(in srgb, var(--primary) 16%, transparent);color:var(--primary);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.badge{padding:.45rem .7rem;border-radius:999px;background:color-mix(in srgb,var(--primary) 16%,transparent);color:var(--primary);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .msgs{padding:1.25rem;overflow:auto;display:flex;flex-direction:column;gap:.85rem}
 .msg{max-width:min(760px,100%);background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1rem;box-shadow:var(--shadow)}
 .msg.me{align-self:flex-end;background:var(--primary);color:var(--inverse)}
 .meta{font-size:.78rem;color:var(--muted);display:flex;gap:.6rem;margin-bottom:.3rem}
-.msg.me .meta{color:color-mix(in srgb, var(--inverse) 80%, transparent)}
+.msg.me .meta{color:color-mix(in srgb,var(--inverse) 80%,transparent)}
 .composer{padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--border)}
-form{display:grid;grid-template-columns:160px 1fr auto;gap:.75rem;padding:.75rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface)}
-input{min-height:52px;border:1px solid var(--border);border-radius:.85rem;padding:0 1rem;background:var(--bg);color:var(--text)}
-.send{min-width:120px;border-radius:.85rem;background:var(--primary);color:var(--inverse);font-weight:700}
+form{display:grid;grid-template-columns:150px 1fr auto;gap:.75rem;padding:.75rem;border:1px solid var(--border);border-radius:1rem;background:var(--surface)}
+input{min-height:48px;border:1px solid var(--border);border-radius:.85rem;padding:0 1rem;background:var(--bg);color:var(--text)}
+.send{min-width:100px;border-radius:.85rem;background:var(--primary);color:var(--inverse);font-weight:700;padding:0 1.5rem}
 .send:hover{background:var(--primary2)}
 .note{font-size:.82rem;color:var(--muted);margin-top:.75rem}
-.stack{display:flex;flex-direction:column;gap:.5rem}
 .small{font-size:.85rem;color:var(--muted)}
-code{background:var(--surface2);padding:.15rem .35rem;border-radius:.35rem}
-@media(max-width:900px){
+@media(max-width:800px){
   .app{grid-template-columns:1fr}
   .side{border-right:none;border-bottom:1px solid var(--border)}
   form{grid-template-columns:1fr}
@@ -79,19 +75,10 @@ code{background:var(--surface2);padding:.15rem .35rem;border-radius:.35rem}
   <aside class="side">
     <div class="brand">
       <div>
-        <h1>Supabase Chat</h1>
-        <div class="small">Realtime room powered by Supabase</div>
+        <h1>ni88er Chat</h1>
+        <div class="small">Realtime rooms</div>
       </div>
       <button class="toggle" id="themeToggle" aria-label="Switch theme"></button>
-    </div>
-    <div class="card">
-      <h2>Setup</h2>
-      <div class="stack">
-        <small><div>1. Put your Supabase URL and anon key in the script.</div></small>
-        <small><div>2. Create a table named de>messages</code>.</div></small>
-        <small><div>3. Enable realtime on that table.</div></small>
-        <small><div>4. Publish this file on Netlify or GitHub Pages.</div></small>
-      </div>
     </div>
     <div class="card">
       <h2>Rooms</h2>
@@ -102,7 +89,7 @@ code{background:var(--surface2);padding:.15rem .35rem;border-radius:.35rem}
     <header class="top">
       <div>
         <h2 id="roomTitle">general</h2>
-        <p id="roomDesc">Open chat room for everyone.</p>
+        <p id="roomDesc">Open chat for everyone.</p>
       </div>
       <div class="badge">Live</div>
     </header>
@@ -113,7 +100,7 @@ code{background:var(--surface2);padding:.15rem .35rem;border-radius:.35rem}
         <input id="messageInput" maxlength="250" placeholder="Type a message...">
         <button class="send" type="submit">Send</button>
       </form>
-      <div class="note" id="status">Waiting for Supabase config.</div>
+      <div class="note" id="status">Connecting...</div>
     </footer>
   </main>
 </div>
@@ -121,25 +108,25 @@ code{background:var(--surface2);padding:.15rem .35rem;border-radius:.35rem}
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = 'https://ibvmnwntciifgfjuchcw.supabase.co';
-const SUPABASE_ANON_KEY = 'sb-publishable-HcNk-snxnySBE9adLYTlKg4sIOCmKI';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlidm1ud250Y2lpZmdmanVjaGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2ODYyMDksImV4cCI6MjA5MzI2MjIwOX0.c9ZMfTKyggPEDgfgBJ6s0-tBKwnHbOlXL5LcbB3aJrM';
 const TABLE = 'messages';
 
 const rooms = {
-  general: { desc: 'Open chat room for everyone.' },
-  study:   { desc: 'Homework, notes, and project talk.' },
-  gaming:  { desc: 'Playlists, squads, and game talk.' }
+  general: { desc: 'Open chat for everyone.' },
+  study:   { desc: 'Homework and project talk.' },
+  gaming:  { desc: 'Squads and game talk.' }
 };
 
-const roomList    = document.getElementById('roomList');
-const msgs        = document.getElementById('messages');
-const roomTitle   = document.getElementById('roomTitle');
-const roomDesc    = document.getElementById('roomDesc');
-const form        = document.getElementById('chatForm');
-const nameInput   = document.getElementById('nameInput');
-const messageInput= document.getElementById('messageInput');
-const status      = document.getElementById('status');
-const themeToggle = document.getElementById('themeToggle');
-const root        = document.documentElement;
+const roomList     = document.getElementById('roomList');
+const msgs         = document.getElementById('messages');
+const roomTitle    = document.getElementById('roomTitle');
+const roomDesc     = document.getElementById('roomDesc');
+const form         = document.getElementById('chatForm');
+const nameInput    = document.getElementById('nameInput');
+const messageInput = document.getElementById('messageInput');
+const status       = document.getElementById('status');
+const themeToggle  = document.getElementById('themeToggle');
+const root         = document.documentElement;
 
 let currentRoom = 'general';
 let client = null;
@@ -151,20 +138,19 @@ const timeLabel = d => new Date(d || Date.now()).toLocaleTimeString([], { hour: 
 function addMessage(m, own = false) {
   const el = document.createElement('article');
   el.className = 'msg' + (own ? ' me' : '');
-  el.innerHTML = `<div class="meta"><strong>${esc(m.user)}</strong><span>${esc(timeLabel(m.createdat || m.created_at))}</span><span>${esc(m.room)}</span></div><div>${esc(m.content)}</div>`;
+  el.innerHTML = `<div class="meta"><strong>${esc(m.user)}</strong><span>${esc(timeLabel(m.created_at))}</span><span>#${esc(m.room)}</span></div><div>${esc(m.content)}</div>`;
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
 }
 
 function setRoom(room) {
   currentRoom = room;
-  const r = rooms[room];
   roomTitle.textContent = room;
-  roomDesc.textContent = r?.desc;
+  roomDesc.textContent = rooms[room]?.desc;
   document.querySelectorAll('.room').forEach(b => b.classList.toggle('active', b.dataset.room === room));
   msgs.innerHTML = '';
   if (channel) { client.removeChannel(channel); channel = null; }
-  subscribe();
+  loadAndSubscribe();
 }
 
 function renderRooms() {
@@ -180,34 +166,33 @@ function renderRooms() {
   });
 }
 
-async function loadInitial() {
-  const { data, error } = await client.from(TABLE).select('*').eq('room', currentRoom).order('createdat', { ascending: true }).limit(50);
-  if (error) { status.textContent = 'Could not load messages: ' + error.message; return; }
+async function loadAndSubscribe() {
+  const { data, error } = await client
+    .from(TABLE)
+    .select('*')
+    .eq('room', currentRoom)
+    .order('created_at', { ascending: true })
+    .limit(50);
+  if (error) { status.textContent = 'Error: ' + error.message; return; }
   data.forEach(row => addMessage(row, row.user === (nameInput.value.trim() || 'Guest')));
-  status.textContent = 'Connected to Supabase realtime.';
-}
+  status.textContent = 'Live in #' + currentRoom;
 
-function subscribe() {
-  if (!client) {
-    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    loadInitial();
-  }
   channel = client.channel('chat:' + currentRoom)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: TABLE, filter: `room=eq.${currentRoom}` }, payload => {
-      const row = payload.new;
-      addMessage(row, row.user === (nameInput.value.trim() || 'Guest'));
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: TABLE,
+      filter: `room=eq.${currentRoom}`
+    }, payload => {
+      addMessage(payload.new, payload.new.user === (nameInput.value.trim() || 'Guest'));
     })
-    .subscribe(s => { if (s === 'SUBSCRIBED') status.textContent = 'Live in ' + currentRoom; });
+    .subscribe();
 }
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  if (!client) return alert('Paste your Supabase URL and anon key first.');
   const user = nameInput.value.trim() || 'Guest';
   const content = messageInput.value.trim();
   if (!content) return;
-  const payload = { room: currentRoom, user, content, createdat: new Date().toISOString() };
-  const { error } = await client.from(TABLE).insert(payload);
+  const { error } = await client.from(TABLE).insert({ room: currentRoom, user, content });
   if (error) { status.textContent = 'Send failed: ' + error.message; return; }
   messageInput.value = '';
   messageInput.focus();
@@ -224,9 +209,10 @@ function initTheme() {
   };
 }
 
+client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 initTheme();
 renderRooms();
-subscribe();
+loadAndSubscribe();
 </script>
 </body>
 </html>
