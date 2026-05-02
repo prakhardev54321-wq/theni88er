@@ -37,7 +37,7 @@ button{cursor:pointer;border:none;background:none}
   overflow:hidden;
 }
 
-/* SIDEBAR - no scroll, fixed height */
+/* SIDEBAR - no scroll */
 .side{
   width:280px;
   min-width:280px;
@@ -96,7 +96,7 @@ button{cursor:pointer;border:none;background:none}
 .room strong{display:block;font-size:.9rem}
 .room-desc{font-size:.78rem;color:var(--muted);margin-top:.1rem}
 
-/* MAIN CHAT AREA */
+/* MAIN - flex column, fills remaining space */
 .main{
   flex:1;
   display:flex;
@@ -104,10 +104,9 @@ button{cursor:pointer;border:none;background:none}
   min-width:0;
   height:100dvh;
   overflow:hidden;
-  position:relative;
 }
 
-/* HEADER - pinned top */
+/* HEADER - flex-shrink:0 keeps it at top */
 .top{
   padding:1rem 1.25rem;
   border-bottom:1px solid var(--border);
@@ -117,9 +116,6 @@ button{cursor:pointer;border:none;background:none}
   gap:1rem;
   flex-shrink:0;
   background:var(--surface);
-  position:sticky;
-  top:0;
-  z-index:10;
 }
 .top h2{font-size:1.3rem;font-weight:700}
 .top p{font-size:.82rem;color:var(--muted);margin-top:.1rem}
@@ -135,9 +131,10 @@ button{cursor:pointer;border:none;background:none}
   flex-shrink:0;
 }
 
-/* MESSAGES - only this scrolls */
+/* MESSAGES - flex:1 fills space, only this scrolls */
 .msgs{
   flex:1;
+  min-height:0;
   overflow-y:auto;
   overflow-x:hidden;
   padding:1rem 1.25rem;
@@ -145,7 +142,6 @@ button{cursor:pointer;border:none;background:none}
   flex-direction:column;
   gap:.75rem;
   scroll-behavior:smooth;
-  min-height:0;
 }
 .msgs::-webkit-scrollbar{width:4px}
 .msgs::-webkit-scrollbar-track{background:transparent}
@@ -178,30 +174,40 @@ button{cursor:pointer;border:none;background:none}
 .msg.me .meta{color:color-mix(in srgb,var(--inverse) 75%,transparent)}
 .msg-content{font-size:.95rem;line-height:1.4}
 
-/* COMPOSER - always pinned at bottom */
+/* COMPOSER - flex-shrink:0 pins it at bottom, NO position:sticky */
 .composer{
-  padding:.75rem 1rem;
+  flex-shrink:0;
+  padding:.85rem 1rem;
   border-top:1px solid var(--border);
   background:var(--surface);
-  flex-shrink:0;
-  position:sticky;
-  bottom:0;
-  z-index:10;
-  width:100%;
 }
-.composer-form{
+.composer-inner{
   display:flex;
   gap:.5rem;
   align-items:center;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:1rem;
+  padding:.5rem .5rem .5rem .75rem;
 }
 .name-input{
-  width:120px;
+  width:110px;
   min-width:80px;
   flex-shrink:0;
+  border:none !important;
+  background:transparent !important;
+  padding:0 !important;
+  font-weight:600;
 }
-.msg-input{flex:1;min-width:0}
+.msg-input{
+  flex:1;
+  min-width:0;
+  border:none !important;
+  background:transparent !important;
+  padding:0 !important;
+}
 input[type=text]{
-  height:44px;
+  height:40px;
   border:1px solid var(--border);
   border-radius:.75rem;
   padding:0 .85rem;
@@ -209,12 +215,16 @@ input[type=text]{
   color:var(--text);
   font-size:.9rem;
   outline:none;
-  transition:border-color .15s;
   width:100%;
 }
-input[type=text]:focus{border-color:var(--primary)}
+.divider{
+  width:1px;
+  height:24px;
+  background:var(--border);
+  flex-shrink:0;
+}
 .send{
-  height:44px;
+  height:40px;
   min-width:72px;
   border-radius:.75rem;
   background:var(--primary);
@@ -230,7 +240,7 @@ input[type=text]:focus{border-color:var(--primary)}
   font-size:.75rem;
   color:var(--muted);
   margin-top:.4rem;
-  padding:0 .1rem;
+  padding:0 .25rem;
 }
 
 /* MOBILE */
@@ -246,8 +256,8 @@ input[type=text]:focus{border-color:var(--primary)}
     gap:.5rem;
   }
   .main{flex:1;min-height:0}
-  .name-input{width:90px}
-  .send{min-width:60px;padding:0 .75rem}
+  .name-input{width:80px}
+  .send{min-width:56px;padding:0 .75rem}
 }
 
 /* TABLET */
@@ -281,11 +291,12 @@ input[type=text]:focus{border-color:var(--primary)}
     </header>
     <section class="msgs" id="messages" aria-live="polite"></section>
     <footer class="composer">
-      <form class="composer-form" id="chatForm">
+      <div class="composer-inner">
         <input class="name-input" type="text" id="nameInput" maxlength="20" placeholder="Name" value="Guest">
+        <div class="divider"></div>
         <input class="msg-input" type="text" id="messageInput" maxlength="250" placeholder="Type a message...">
-        <button class="send" type="submit">Send</button>
-      </form>
+        <button class="send" id="sendBtn">Send</button>
+      </div>
       <div class="status-bar" id="status">Connecting...</div>
     </footer>
   </main>
@@ -300,9 +311,9 @@ const roomList=document.getElementById('roomList');
 const msgs=document.getElementById('messages');
 const roomTitle=document.getElementById('roomTitle');
 const roomDesc=document.getElementById('roomDesc');
-const form=document.getElementById('chatForm');
 const nameInput=document.getElementById('nameInput');
 const messageInput=document.getElementById('messageInput');
+const sendBtn=document.getElementById('sendBtn');
 const status=document.getElementById('status');
 const themeToggle=document.getElementById('themeToggle');
 const root=document.documentElement;
@@ -351,8 +362,7 @@ async function loadAndSubscribe(){
       addMessage(payload.new,payload.new.username===(nameInput.value.trim()||'Guest'));
     }).subscribe();
 }
-form.addEventListener('submit',async e=>{
-  e.preventDefault();
+async function sendMessage(){
   const username=nameInput.value.trim()||'Guest';
   const content=messageInput.value.trim();
   if(!content)return;
@@ -360,7 +370,9 @@ form.addEventListener('submit',async e=>{
   const {error}=await client.from(TABLE).insert({room:currentRoom,username,content});
   if(error){status.textContent='Send failed: '+error.message;return;}
   messageInput.focus();
-});
+}
+sendBtn.addEventListener('click',sendMessage);
+messageInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage();});
 messageInput.addEventListener('focus',()=>setTimeout(scrollBottom,300));
 function initTheme(){
   let mode=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
