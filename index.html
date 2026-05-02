@@ -6,10 +6,10 @@
   --radius:1rem;--font:Satoshi,system-ui,sans-serif;
 }
 [data-theme="dark"]{
-            --bg:#030303;--surface:#181818;--surface2:#222222;
+                --bg:#0f0f0f;--surface:#1c1c1c;--surface2:#242424;
       --border:#1f1f1f;--text:#e8e8e8;--muted:#666666;
       --primary:#5bb8c4;--primary2:#3a9aab;--inverse:#000000;
-  --shadow:0 4px 20px rgba(0,0,0,.3);
+    --shadow:0 2px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{
@@ -50,6 +50,7 @@ button{cursor:pointer;border:none;background:none}
 .badge{padding:.35rem .65rem;border-radius:999px;background:color-mix(in srgb,var(--primary) 16%,transparent);color:var(--primary);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
 .msgs{
   flex:1;min-height:0;
+    box-shadow:inset 0 8px 32px rgba(0,0,0,.8),inset 0 -4px 16px rgba(0,0,0,.4);
     background:var(--bg);
   overflow-y:auto;overflow-x:hidden;
   padding:1rem 1.25rem;
